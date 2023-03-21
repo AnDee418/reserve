@@ -1,0 +1,39 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>ご予約情報</h1>
+    {% for event_check in event_checks %}
+        <div class="check-get-box">
+            <div class="box-inside">
+                <div class="reserve-items">
+                    <p>お名前</p>
+                    <h3>{{ event_check['summary'].split()[0] }}</h3>
+                </div>
+                <div class="reserve-items">
+                    <p>メニュー</p>
+                    <h3>{{ event_check['summary'].split()[1] }}</h3>
+                </div>
+                <div class="reserve-items">
+                    <p>日付</p>
+                    <h3>{{ event_check['event_date'] }}</h3>
+                </div>
+                <div class="reserve-items">
+                    <p>時間</p>
+                    <h3>{{ event_check['time'] }}</h3>
+                </div>
+            </div>
+            <form action="/delete/remind" method="POST">
+                <input type="text" name="id" id="id" value="{{event_check['id']}}" style="display: none;">
+                <input type="text" name="name" id="name" value="{{event_check['summary'].split()[0]}}" style="display: none;">
+                <input type="text" name="menu" id="menu" value="{{event_check['summary'].split()[1]}}" style="display: none;">
+                <input type="text" name="date" id="date" value="{{event_check['event_date']}}" style="display: none;">
+                <input type="text" name="time" id="time" value="{{event_check['time']}}" style="display: none;">
+                    <div id="bottom" class="d-grid gap-2 mx-auto">
+                        <button class="btn btn-danger btn-sm" type="submit" onclick="return checkDate()">
+                            予約をキャンセルする
+                        </button>
+                    </div>
+            </form>
+        </div>
+    {% endfor %}
+{% endblock %}

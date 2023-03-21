@@ -1,0 +1,156 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>予約情報入力</h1>
+
+    <div id="form">
+        {% if request.method == 'POST' %}
+            <div class="d-grid gap-2 change">
+                <p>{{ date }}</p>
+                <a href="/" class="btn btn-danger btn-sm" onclick="return checkDate()">日付を変更する</a>
+            </div>
+            <form action="/remind" method="POST">
+                <fieldset>
+                    <div class="form-floating mb-3" style="display: none;">
+                        <input class="form-control" type="text" name="name" id="name" placeholder="お名前" value="{{ name }}" required>
+                        <label for="name">お名前</label>
+                    </div>
+                    <div style="display: none;">
+                        <select class="form-select form-select-lg mb-3" name="menu" id="menu" value="" required>
+                            <option selected>メニュー選択</option>
+                            <option value="治療" {% if menu == '治療' %}selected{% endif %}>治療</option>
+                            <option value="トレーニング" {% if menu == 'トレーニング' %}selected{% endif %}>トレーニング</option>
+                        </select>
+                    </div>
+                    <div class="form-floating mb-3" style="display: none;">
+                        <input class="form-control" type="text" name="date" id="date" placeholder="日付" value="{{ date }}" required>
+                        <label for="date">日付</label>
+                    </div>
+                    <div class="time-select">
+                        <h2>時間選択</h2>
+                        
+                        {% if suturdays == True %}
+
+                            {% for add_event_sut in add_events_sut %}
+                                <div class="time-selecter">
+                                    <div class="left">
+                                        <p>{{ add_event_sut['time'] }}</p>
+                                    </div>
+                                    <div class="right">
+                                        {% if menu == '治療' %}
+                                            {% if add_event_sut['med_count'] == 2 or (add_event_sut['med_count'] == 1 and add_event_sut['jim_count'] == 1) %}
+                                                <p>×</p>
+                                            {% else %}
+                                                <button class="btn btn-outline-primary btn-lg scroll-btn" type="button" data-time="{{ add_event_sut['time'] }}" onclick="reserveTime(this)">選択する</button>
+                                            {% endif %}
+                                        {% elif menu == 'トレーニング' %}
+                                            {% if add_event_sut['med_count'] == 2 or add_event_sut['jim_count'] == 1 %}
+                                                <p>×</p>
+                                            {% else %}
+                                                <button class="btn btn-outline-primary btn-lg scroll-btn" type="button" data-time="{{ add_event_sut['time'] }}" onclick="reserveTime(this)">選択する</button>
+                                            {% endif %}
+                                        {% else %}
+                                            <p>メニューを選択してください。</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        
+                        {% else %}
+
+                            {% for add_event in add_events %}
+                                <div class="time-selecter">
+                                    <div class="left">
+                                        <p>{{ add_event['time'] }}</p>
+                                    </div>
+                                    <div class="right">
+                                        {% if menu == '治療' %}
+                                            {% if add_event['med_count'] == 2 or (add_event['med_count'] == 1 and add_event['jim_count'] == 1) %}
+                                                <p>×</p>
+                                            {% else %}
+                                                <button class="btn btn-outline-primary btn-lg scroll-btn" type="button" data-time="{{ add_event['time'] }}" onclick="reserveTime(this)">〇 選択する</button>
+                                            {% endif %}
+                                        {% elif menu == 'トレーニング' %}
+                                            {% if add_event['med_count'] == 2 or add_event['jim_count'] == 1 %}
+                                                <p>×</p>
+                                            {% else %}
+                                                <button class="btn btn-outline-primary btn-lg scroll-btn" type="button" data-time="{{ add_event['time'] }}" onclick="reserveTime(this)">〇 選択する</button>
+                                            {% endif %}
+                                        {% else %}
+                                            <p>メニューを選択してください。</p>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            {% endfor %}
+
+                        {% endif %}                   
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="text" name="time" id="time" placeholder="時間" value="" readonly required>
+                        <label for="date">予約時間選択</label>
+                    </div>
+                    <div id="bottom" class="d-grid gap-2 mx-auto">
+                        <button class="btn btn-primary btn-lg" type="submit" onclick="return checkDate()">
+                            予約する
+                        </button>
+                    </div>
+
+                </fieldset>
+            </form>
+        {% else %}
+            <form action="/" method="POST">
+                <fieldset>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="text" name="name" id="name" placeholder="お名前" value="{{ name }}" required>
+                        <label for="name">お名前</label>
+                    </div>
+                    <div>
+                        <select class="form-select form-select-lg mb-3" aria-label=".form-select-lg" name="menu" id="menu" value="" required>
+                            <option selected>メニュー選択</option>
+                            <option value="治療" {% if menu == '治療' %}selected{% endif %}>治療</option>
+                            <option value="トレーニング" {% if menu == 'トレーニング' %}selected{% endif %}>トレーニング</option>
+                        </select>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input class="form-control" type="text" name="date" id="date" placeholder="日付" required>
+                        <label for="date">日付</label>
+                    </div>
+                    <div class="d-grid gap-2 mx-auto">
+                        <button class="btn btn-primary btn-lg" type="submit" onclick="return checkDate()">
+                            検索
+                        </button>
+                    </div>
+                </fieldset>
+                <p id="message" style="display:none">日付を選択してください。</p>
+            </form>
+            <div class="link" style="margin-top: 5%;">
+                <a class="btn btn-outline-secondary" href="/check">予約を確認・キャンセルする</a>
+            </div>
+        {% endif %}
+    </div>
+
+    <script>
+        function checkDate() {
+            // 日付の入力があるかどうかをチェックする
+            var dateInput = document.getElementById("date");
+            if (dateInput.value == "") {
+                document.getElementById("message").style.display = "block";
+                return false;
+            } else {
+                document.getElementById("timeList").style.display = "block";
+                return true;
+            }
+        }
+        function reserveTime(btn) {
+            var selectedTime = btn.getAttribute("data-time");
+            document.getElementById("time").value = selectedTime;
+        }
+        var scrollBtns = document.getElementsByClassName("scroll-btn");
+		for (var i = 0; i < scrollBtns.length; i++) {
+			scrollBtns[i].addEventListener("click", function() {
+				window.scrollTo(0, document.body.scrollHeight);
+			});
+		}
+    </script>
+{% endblock %}
+

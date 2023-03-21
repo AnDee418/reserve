@@ -1,0 +1,38 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h1>予約情報確認</h1>
+
+    <form action="/try_insert" method="POST">
+        <fieldset>
+            <div class="item-group">
+                <label for="name">お名前</label>
+                <input type="text" name="name" id="name" value="{{ name }}" readonly style="display: none;">
+                <p class="item name-item">{{ name }}</p>
+            </div>
+            <div class="item-group">
+                <label for="menu">メニュー</label>
+                <input type="text" name="menu" id="menu" value="{{ menu }}" readonly style="display: none;">
+                <p class="item name-item">{{ menu }}</p>
+            </div>
+            <div class="item-group">
+                <label for="date">日付</label>
+                <input type="text" name="date" id="date" value="{{ date }}" readonly style="display: none;">
+                <p class="item name-item">{{ date }}</p>
+            </div>
+            <div class="item-group">
+                <label for="time">時間</label>
+                <input type="text" name="time" id="time" value="{{ time }}" readonly style="display: none;">
+                <p class="item name-item">{{ time }}</p>
+            </div>
+            <div class="d-grid gap-2 col-7 mx-auto bottom1">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    この内容で予約する
+                </button>
+            </div>
+        </fieldset>
+    </form>
+    <div class="d-grid gap-2 col-7 mx-auto">
+        <a href="/" class="btn btn-danger btn-lg">やり直す</a>
+    </div>
+{% endblock %}

@@ -1,0 +1,18 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<form action="/check/get" method="POST">
+    <fieldset>
+        <div class="form-floating mb-3">
+            <input class="form-control" type="text" name="name" id="name" placeholder="お名前" value="{{ name }}" required>
+            <label for="name">お名前</label>
+        </div>
+        <div class="d-grid gap-2 mx-auto">
+            <button class="btn btn-primary btn-lg" type="submit" onclick="return checkDate()">
+                検索
+            </button>
+        </div>
+    </fieldset>
+    <p id="message" style="display:none">名前を入力してください。</p>
+</form>
+{% endblock %}
